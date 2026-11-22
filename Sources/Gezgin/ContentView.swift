@@ -21,100 +21,100 @@ struct ContentView: View {
         .toolbar {
             ToolbarItemGroup(placement: .navigation) {
                 Button { model.goBack() } label: {
-                    Label("Geri", systemImage: "chevron.left")
+                    Label(L("Geri"), systemImage: "chevron.left")
                 }
                 .disabled(!model.canGoBack)
-                .help("Geri")
+                .help(L("Geri"))
 
                 Button { model.goForward() } label: {
-                    Label("İleri", systemImage: "chevron.right")
+                    Label(L("İleri"), systemImage: "chevron.right")
                 }
                 .disabled(!model.canGoForward)
-                .help("İleri")
+                .help(L("İleri"))
 
                 Button { model.goUp() } label: {
-                    Label("Yukarı", systemImage: "arrow.up")
+                    Label(L("Yukarı"), systemImage: "arrow.up")
                 }
                 .disabled(!model.canGoUp)
-                .help("Üst klasör")
+                .help(L("Üst klasör"))
             }
 
             ToolbarItemGroup(placement: .primaryAction) {
                 Button { model.beginNewFolder() } label: {
-                    Label("Yeni Klasör", systemImage: "folder.badge.plus")
+                    Label(L("Yeni Klasör"), systemImage: "folder.badge.plus")
                 }
-                .help("Yeni klasör")
+                .help(L("Yeni klasör"))
 
                 Button { model.cutSelection() } label: {
-                    Label("Kes", systemImage: "scissors")
+                    Label(L("Kes"), systemImage: "scissors")
                 }
                 .disabled(model.selection.isEmpty)
-                .help("Kes")
+                .help(L("Kes"))
 
                 Button { model.copySelection() } label: {
-                    Label("Kopyala", systemImage: "doc.on.doc")
+                    Label(L("Kopyala"), systemImage: "doc.on.doc")
                 }
                 .disabled(model.selection.isEmpty)
-                .help("Kopyala")
+                .help(L("Kopyala"))
 
                 Button { model.paste() } label: {
-                    Label("Yapıştır", systemImage: "doc.on.clipboard")
+                    Label(L("Yapıştır"), systemImage: "doc.on.clipboard")
                 }
-                .help("Yapıştır")
+                .help(L("Yapıştır"))
 
                 Button { model.trashSelection() } label: {
-                    Label("Sil", systemImage: "trash")
+                    Label(L("Sil"), systemImage: "trash")
                 }
                 .disabled(model.selection.isEmpty)
-                .help("Çöp Kutusuna taşı")
+                .help(L("Çöp Kutusuna taşı"))
 
                 Button { model.openInTerminal(model.currentFolder) } label: {
-                    Label("Terminal", systemImage: "terminal")
+                    Label(L("Terminal"), systemImage: "terminal")
                 }
-                .help("Bu klasörde Terminal aç")
+                .help(L("Bu klasörde Terminal aç"))
 
                 Toggle(isOn: $model.showHidden) {
-                    Label("Gizli Dosyalar", systemImage: "eye")
+                    Label(L("Gizli Dosyalar"), systemImage: "eye")
                 }
-                .help("Gizli dosyaları göster")
+                .help(L("Gizli dosyaları göster"))
 
                 Button { model.reload(); model.refreshTreeRoots(); model.treeRevision += 1 } label: {
-                    Label("Yenile", systemImage: "arrow.clockwise")
+                    Label(L("Yenile"), systemImage: "arrow.clockwise")
                 }
-                .help("Yenile")
+                .help(L("Yenile"))
             }
         }
-        .searchable(text: $model.searchText, prompt: "Bu klasörde ara")
+        .searchable(text: $model.searchText, prompt: L("Bu klasörde ara"))
         .quickLookPreview($model.quickLookURL)
-        .alert("Yeniden Adlandır", isPresented: $model.showRename) {
-            TextField("Ad", text: $model.nameInput)
-            Button("Vazgeç", role: .cancel) {}
-            Button("Tamam") { model.commitRename() }
+        .alert(L("Yeniden Adlandır"), isPresented: $model.showRename) {
+            TextField(L("Ad"), text: $model.nameInput)
+            Button(L("Vazgeç"), role: .cancel) {}
+            Button(L("Tamam")) { model.commitRename() }
         }
-        .alert("Yeni Klasör", isPresented: $model.showNewFolder) {
-            TextField("Klasör adı", text: $model.nameInput)
-            Button("Vazgeç", role: .cancel) {}
-            Button("Oluştur") { model.commitNewFolder() }
+        .alert(L("Yeni Klasör"), isPresented: $model.showNewFolder) {
+            TextField(L("Klasör adı"), text: $model.nameInput)
+            Button(L("Vazgeç"), role: .cancel) {}
+            Button(L("Oluştur")) { model.commitNewFolder() }
         }
-        .alert("Yeni Metin Belgesi", isPresented: $model.showNewFile) {
-            TextField("Dosya adı", text: $model.nameInput)
-            Button("Vazgeç", role: .cancel) {}
-            Button("Oluştur") { model.commitNewFile() }
+        .alert(L("Yeni Metin Belgesi"), isPresented: $model.showNewFile) {
+            TextField(L("Dosya adı"), text: $model.nameInput)
+            Button(L("Vazgeç"), role: .cancel) {}
+            Button(L("Oluştur")) { model.commitNewFile() }
         }
-        .alert("Klasöre Git", isPresented: $model.showGoTo) {
-            TextField("Yol", text: $model.nameInput)
-            Button("Vazgeç", role: .cancel) {}
-            Button("Git") { model.commitGoTo() }
+        .alert(L("Klasöre Git"), isPresented: $model.showGoTo) {
+            TextField(L("Yol"), text: $model.nameInput)
+            Button(L("Vazgeç"), role: .cancel) {}
+            Button(L("Git")) { model.commitGoTo() }
         }
-        .alert("Taşı veya Kopyala", isPresented: $model.showDropConfirm) {
-            Button("Taşı") { model.performDrop(move: true) }
-            Button("Kopyala") { model.performDrop(move: false) }
-            Button("Vazgeç", role: .cancel) { model.cancelDrop() }
+        .alert(L("Taşı veya Kopyala"), isPresented: $model.showDropConfirm) {
+            Button(L("Taşı")) { model.performDrop(move: true) }
+            Button(L("Kopyala")) { model.performDrop(move: false) }
+            Button(L("Vazgeç"), role: .cancel) { model.cancelDrop() }
         } message: {
             Text(model.dropMessage)
         }
-        .alert("Hata", isPresented: errorBinding) {
-            Button("Tamam", role: .cancel) {}
+        .alert(L("Hata"), isPresented: errorBinding) {
+            Button(L("Tamam"), role: .cancel) {}
         } message: {
             Text(model.errorMessage ?? "")
         }
@@ -187,10 +187,10 @@ struct PathBar: View {
         .frame(height: 30)
         .background(.bar)
         .contextMenu {
-            Button("Yolu Kopyala") { model.copyPath([]) }
-            Button("Klasöre Git…") { model.beginGoTo() }
+            Button(L("Yolu Kopyala")) { model.copyPath([]) }
+            Button(L("Klasöre Git…")) { model.beginGoTo() }
             Divider()
-            Toggle("Tam Yolu Göster", isOn: $model.showFullPath)
+            Toggle(L("Tam Yolu Göster"), isOn: $model.showFullPath)
         }
     }
 }

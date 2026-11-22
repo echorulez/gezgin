@@ -57,13 +57,6 @@ struct PathCrumb {
     let component: String
 }
 
-struct Favorite: Identifiable {
-    let title: String
-    let systemImage: String
-    let url: URL
-    var id: String { url.path }
-}
-
 /// Soldaki ağaçta görünen tek bir satır.
 struct TreeRow: Identifiable {
     let id: String

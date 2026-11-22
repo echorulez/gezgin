@@ -35,28 +35,29 @@ struct GezginApp: App {
                 .frame(minWidth: 820, minHeight: 480)
         }
         .commands {
+            // Uygulama menüsündeki Ayarlar… (⌘,) öğesini Settings sahnesi ekler.
             CommandGroup(replacing: .newItem) {
-                Button("Yeni Klasör") { model.beginNewFolder() }
+                Button(L("Yeni Klasör")) { model.beginNewFolder() }
                     .keyboardShortcut("n", modifiers: [.command, .shift])
-                Button("Yeni Metin Belgesi") { model.beginNewFile() }
+                Button(L("Yeni Metin Belgesi")) { model.beginNewFile() }
                     .keyboardShortcut("n", modifiers: [.command, .option])
                 Divider()
-                Button("Aç") { model.openSelection() }
+                Button(L("Aç")) { model.openSelection() }
                     .keyboardShortcut("o", modifiers: .command)
-                Button("Yeniden Adlandır…") { model.beginRenameSelection() }
+                Button(L("Yeniden Adlandır…")) { model.beginRenameSelection() }
                     .keyboardShortcut(renameKey, modifiers: [])
-                Button("Çoğalt") { model.duplicate(Array(model.selection)) }
+                Button(L("Çoğalt")) { model.duplicate(Array(model.selection)) }
                     .keyboardShortcut("d", modifiers: .command)
-                Button("Çöp Kutusuna Taşı") { model.trashSelection() }
+                Button(L("Çöp Kutusuna Taşı")) { model.trashSelection() }
                     .keyboardShortcut(.delete, modifiers: .command)
                 Divider()
-                Button("Finder'da Göster") { model.revealInFinder(Array(model.selection)) }
-                Button("Burada Terminal Aç") { model.openInTerminal(model.currentFolder) }
+                Button(L("Finder'da Göster")) { model.revealInFinder(Array(model.selection)) }
+                Button(L("Burada Terminal Aç")) { model.openInTerminal(model.currentFolder) }
                     .keyboardShortcut("t", modifiers: [.command, .option])
             }
 
             CommandGroup(replacing: .pasteboard) {
-                Button("Kes") {
+                Button(L("Kes")) {
                     if isEditingText {
                         NSApp.sendAction(#selector(NSText.cut(_:)), to: nil, from: nil)
                     } else {
@@ -65,7 +66,7 @@ struct GezginApp: App {
                 }
                 .keyboardShortcut("x", modifiers: .command)
 
-                Button("Kopyala") {
+                Button(L("Kopyala")) {
                     if isEditingText {
                         NSApp.sendAction(#selector(NSText.copy(_:)), to: nil, from: nil)
                     } else {
@@ -74,7 +75,7 @@ struct GezginApp: App {
                 }
                 .keyboardShortcut("c", modifiers: .command)
 
-                Button("Yapıştır") {
+                Button(L("Yapıştır")) {
                     if isEditingText {
                         NSApp.sendAction(#selector(NSText.paste(_:)), to: nil, from: nil)
                     } else {
@@ -83,12 +84,12 @@ struct GezginApp: App {
                 }
                 .keyboardShortcut("v", modifiers: .command)
 
-                Button("Yolu Kopyala") { model.copyPath(Array(model.selection)) }
+                Button(L("Yolu Kopyala")) { model.copyPath(Array(model.selection)) }
                     .keyboardShortcut("c", modifiers: [.command, .option])
 
                 Divider()
 
-                Button("Tümünü Seç") {
+                Button(L("Tümünü Seç")) {
                     if isEditingText {
                         NSApp.sendAction(#selector(NSText.selectAll(_:)), to: nil, from: nil)
                     } else {
@@ -98,35 +99,40 @@ struct GezginApp: App {
                 .keyboardShortcut("a", modifiers: .command)
             }
 
-            CommandMenu("Git") {
-                Button("Geri") { model.goBack() }
+            CommandMenu(L("Git")) {
+                Button(L("Geri")) { model.goBack() }
                     .keyboardShortcut("[", modifiers: .command)
                     .disabled(!model.canGoBack)
-                Button("İleri") { model.goForward() }
+                Button(L("İleri")) { model.goForward() }
                     .keyboardShortcut("]", modifiers: .command)
                     .disabled(!model.canGoForward)
-                Button("Üst Klasör") { model.goUp() }
+                Button(L("Üst Klasör")) { model.goUp() }
                     .keyboardShortcut(.upArrow, modifiers: .command)
                     .disabled(!model.canGoUp)
-                Button("Seçileni Aç") { model.openSelection() }
+                Button(L("Seçileni Aç")) { model.openSelection() }
                     .keyboardShortcut(.downArrow, modifiers: .command)
                 Divider()
-                Button("Klasöre Git…") { model.beginGoTo() }
+                Button(L("Klasöre Git…")) { model.beginGoTo() }
                     .keyboardShortcut("g", modifiers: [.command, .shift])
-                Button("Yenile") { model.reload() }
+                Button(L("Yenile")) { model.reload() }
                     .keyboardShortcut("r", modifiers: .command)
             }
 
             // Görünüm menüsü
             CommandGroup(before: .toolbar) {
-                Toggle("Tam Yolu Göster", isOn: $model.showFullPath)
+                Toggle(L("Tam Yolu Göster"), isOn: $model.showFullPath)
                     .keyboardShortcut("p", modifiers: [.command, .option])
-                Toggle("Gezgin İkonları", isOn: $model.useThemeIcons)
+                Toggle(L("Gezgin İkonları"), isOn: $model.useThemeIcons)
                     .keyboardShortcut("i", modifiers: [.command, .option])
-                Toggle("Gizli Dosyaları Göster", isOn: $model.showHidden)
+                Toggle(L("Gizli Dosyaları Göster"), isOn: $model.showHidden)
                     .keyboardShortcut(".", modifiers: [.command, .shift])
                 Divider()
             }
+        }
+
+        Settings {
+            SettingsView()
+                .environmentObject(model)
         }
     }
 }

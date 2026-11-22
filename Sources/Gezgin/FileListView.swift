@@ -6,7 +6,7 @@ struct FileListView: View {
 
     var body: some View {
         Table(of: FileItem.self, selection: $model.selection, sortOrder: $model.sortOrder) {
-            TableColumn("Ad", value: \.name) { item in
+            TableColumn(L("Ad"), value: \.name) { item in
                 HStack(spacing: 6) {
                     ItemIcon(themed: model.useThemeIcons, url: item.url, name: item.name, isDirectory: item.isDirectory,
                              isPackage: item.isPackage, size: 18)
@@ -17,19 +17,19 @@ struct FileListView: View {
             }
             .width(min: 180, ideal: 340)
 
-            TableColumn("Değiştirilme", value: \.modified) { item in
+            TableColumn(L("Değiştirilme"), value: \.modified) { item in
                 Text(item.modified.formatted(date: .abbreviated, time: .shortened))
                     .foregroundStyle(.secondary)
             }
             .width(min: 120, ideal: 160)
 
-            TableColumn("Boyut", value: \.size) { item in
+            TableColumn(L("Boyut"), value: \.size) { item in
                 Text(item.sizeText)
                     .foregroundStyle(.secondary)
             }
             .width(min: 60, ideal: 90)
 
-            TableColumn("Tür", value: \.kind) { item in
+            TableColumn(L("Tür"), value: \.kind) { item in
                 Text(item.kind)
                     .foregroundStyle(.secondary)
                     .lineLimit(1)
@@ -67,8 +67,8 @@ struct FileListView: View {
 
     private var emptyMessage: String {
         if let error = model.folderError { return error }
-        if !model.searchText.isEmpty { return "Eşleşen öğe yok" }
-        return "Bu klasör boş"
+        if !model.searchText.isEmpty { return L("Eşleşen öğe yok") }
+        return L("Bu klasör boş")
     }
 }
 
@@ -80,23 +80,23 @@ struct ItemContextMenu: View {
     var body: some View {
         let urls = Array(ids)
         if urls.isEmpty {
-            Button("Yeni Klasör") { model.beginNewFolder() }
-            Button("Yeni Metin Belgesi") { model.beginNewFile() }
+            Button(L("Yeni Klasör")) { model.beginNewFolder() }
+            Button(L("Yeni Metin Belgesi")) { model.beginNewFile() }
             Divider()
-            Button("Yapıştır") { model.paste() }
+            Button(L("Yapıştır")) { model.paste() }
                 .disabled(!model.pasteboardHasFiles)
             Divider()
-            Button("Yolu Kopyala") { model.copyPath([]) }
-            Button("Finder'da Göster") { model.revealInFinder([]) }
-            Button("Burada Terminal Aç") { model.openInTerminal(model.currentFolder) }
+            Button(L("Yolu Kopyala")) { model.copyPath([]) }
+            Button(L("Finder'da Göster")) { model.revealInFinder([]) }
+            Button(L("Burada Terminal Aç")) { model.openInTerminal(model.currentFolder) }
             Divider()
-            Button("Yenile") { model.reload() }
+            Button(L("Yenile")) { model.reload() }
         } else {
-            Button("Aç") { model.openItems(urls) }
+            Button(L("Aç")) { model.openItems(urls) }
             if urls.count == 1, let url = urls.first {
                 let apps = model.applications(for: url)
                 if !apps.isEmpty {
-                    Menu("Birlikte Aç") {
+                    Menu(L("Birlikte Aç")) {
                         ForEach(apps, id: \.path) { app in
                             Button(FileManager.default.displayName(atPath: app.path)) {
                                 model.open(url, withApplication: app)
@@ -106,23 +106,23 @@ struct ItemContextMenu: View {
                 }
             }
             Divider()
-            Button("Kes") { model.cut(urls) }
-            Button("Kopyala") { model.copy(urls) }
+            Button(L("Kes")) { model.cut(urls) }
+            Button(L("Kopyala")) { model.copy(urls) }
             if urls.count == 1, let url = urls.first, isFolder(url) {
-                Button("İçine Yapıştır") { model.paste(into: url) }
+                Button(L("İçine Yapıştır")) { model.paste(into: url) }
                     .disabled(!model.pasteboardHasFiles)
             }
-            Button("Çoğalt") { model.duplicate(urls) }
+            Button(L("Çoğalt")) { model.duplicate(urls) }
             Divider()
             if urls.count == 1, let url = urls.first {
-                Button("Yeniden Adlandır…") { model.beginRename(url) }
+                Button(L("Yeniden Adlandır…")) { model.beginRename(url) }
             }
-            Button("Çöp Kutusuna Taşı") { model.trash(urls) }
+            Button(L("Çöp Kutusuna Taşı")) { model.trash(urls) }
             Divider()
-            Button("Yolu Kopyala") { model.copyPath(urls) }
-            Button("Finder'da Göster") { model.revealInFinder(urls) }
+            Button(L("Yolu Kopyala")) { model.copyPath(urls) }
+            Button(L("Finder'da Göster")) { model.revealInFinder(urls) }
             if urls.count == 1, let url = urls.first, isFolder(url) {
-                Button("Burada Terminal Aç") { model.openInTerminal(url) }
+                Button(L("Burada Terminal Aç")) { model.openInTerminal(url) }
             }
         }
     }

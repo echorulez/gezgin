@@ -24,6 +24,13 @@ final class ExplorerModel: ObservableObject {
     @Published var showFullPath: Bool = (UserDefaults.standard.object(forKey: "showFullPath") as? Bool) ?? true {
         didSet { UserDefaults.standard.set(showFullPath, forKey: "showFullPath") }
     }
+    /// Arayüz dili: sistem dili, Türkçe veya İngilizce.
+    @Published var language: AppLanguage = AppLanguage.saved {
+        didSet {
+            UserDefaults.standard.set(language.rawValue, forKey: "language")
+            Loc.apply(language)
+        }
+    }
     /// Gezgin'in kendi ikon teması mı, yoksa macOS sistem ikonları mı.
     @Published var useThemeIcons: Bool = (UserDefaults.standard.object(forKey: "useThemeIcons") as? Bool) ?? true {
         didSet { UserDefaults.standard.set(useThemeIcons, forKey: "useThemeIcons") }
@@ -65,7 +72,6 @@ final class ExplorerModel: ObservableObject {
     @Published private(set) var backStack: [URL] = []
     @Published private(set) var forwardStack: [URL] = []
 
-    let favorites: [Favorite]
     @Published var treeRoots: [URL] = []
 
     private var allItems: [FileItem] = []
@@ -82,24 +88,10 @@ final class ExplorerModel: ObservableObject {
     // MARK: - Kurulum
 
     init() {
+        Loc.apply(AppLanguage.saved)
         let fm = FileManager.default
         let home = fm.homeDirectoryForCurrentUser
         currentFolder = home
-
-        var favs = [Favorite(title: "Ana Klasör", systemImage: "house", url: home)]
-        let known: [(String, String, FileManager.SearchPathDirectory)] = [
-            ("Masaüstü", "menubar.dock.rectangle", .desktopDirectory),
-            ("Belgeler", "doc", .documentDirectory),
-            ("İndirilenler", "arrow.down.circle", .downloadsDirectory)
-        ]
-        for (title, image, dir) in known {
-            if let url = fm.urls(for: dir, in: .userDomainMask).first {
-                favs.append(Favorite(title: title, systemImage: image, url: url))
-            }
-        }
-        favs.append(Favorite(title: "Uygulamalar", systemImage: "square.grid.2x2",
-                             url: URL(fileURLWithPath: "/Applications")))
-        favorites = favs
 
         refreshTreeRoots()
         loadChildren(home.path)
@@ -167,10 +159,10 @@ final class ExplorerModel: ObservableObject {
     }
 
     var statusText: String {
-        var text = "\(items.count) öğe"
+        var text = L("%ld öğe", items.count)
         let selected = selectedItems
         if !selected.isEmpty {
-            text += " • \(selected.count) seçili"
+            text += " • " + L("%ld seçili", selected.count)
             let total = selected.filter { !$0.isDirectory && !$0.isPackage }
                 .reduce(Int64(0)) { $0 + $1.size }
             if total > 0 {
@@ -368,7 +360,7 @@ final class ExplorerModel: ObservableObject {
             DispatchQueue.main.async {
                 self.busy = false
                 if let failure {
-                    self.errorMessage = "“\(name)” çıkarılamadı.\n\(failure)"
+                    self.errorMessage = L("“%@” çıkarılamadı.", name) + "\n" + failure
                 }
                 self.refreshTreeRoots()
             }
@@ -442,7 +434,7 @@ final class ExplorerModel: ObservableObject {
                 pendingSelectPaths = [fileURL.path]
             }
         } else {
-            errorMessage = "Böyle bir konum yok:\n\(path)"
+            errorMessage = L("Böyle bir konum yok:") + "\n" + path
         }
     }
 
@@ -481,7 +473,7 @@ final class ExplorerModel: ObservableObject {
                 }
                 self.folderError = failure
                 if let free {
-                    self.freeSpaceText = ByteCountFormatter.string(fromByteCount: free, countStyle: .file) + " boş"
+                    self.freeSpaceText = ByteCountFormatter.string(fromByteCount: free, countStyle: .file) + " " + L("boş")
                 } else {
                     self.freeSpaceText = ""
                 }
@@ -556,7 +548,7 @@ final class ExplorerModel: ObservableObject {
         }
         for item in targets where !item.isDirectory {
             if !NSWorkspace.shared.open(item.url) {
-                errorMessage = "“\(item.name)” açılamadı."
+                errorMessage = L("“%@” açılamadı.", item.name)
             }
         }
     }
@@ -645,7 +637,7 @@ final class ExplorerModel: ObservableObject {
             for source in sources {
                 let sourcePath = source.standardizedFileURL.path
                 if ExplorerModel.isAncestorOrSame(sourcePath, of: target.path) && sourcePath != "/" {
-                    throw ExplorerError.message("“\(source.lastPathComponent)” kendi içine kopyalanamaz veya taşınamaz.")
+                    throw ExplorerError.message(L("“%@” kendi içine taşınamaz veya kopyalanamaz.", source.lastPathComponent))
                 }
                 if isMove {
                     if source.deletingLastPathComponent().path == target.path { continue }
@@ -683,7 +675,7 @@ final class ExplorerModel: ObservableObject {
         // Bırakma işlemi bitsin, sonra diyalog açılsın.
         DispatchQueue.main.async {
             if let bad = sources.first(where: { ExplorerModel.isAncestorOrSame($0.path, of: targetPath) }) {
-                self.errorMessage = "“\(bad.lastPathComponent)” kendi içine taşınamaz veya kopyalanamaz."
+                self.errorMessage = L("“%@” kendi içine taşınamaz veya kopyalanamaz.", bad.lastPathComponent)
                 return
             }
             self.pendingDropSources = sources
@@ -696,9 +688,9 @@ final class ExplorerModel: ObservableObject {
         guard let target = pendingDropTarget else { return "" }
         let targetName = FileManager.default.displayName(atPath: target.path)
         if pendingDropSources.count == 1, let only = pendingDropSources.first {
-            return "“\(only.lastPathComponent)” öğesini “\(targetName)” klasörüne taşımak mı, kopyalamak mı istiyorsunuz?"
+            return L("“%@” öğesini “%@” klasörüne taşımak mı, kopyalamak mı istiyorsunuz?", only.lastPathComponent, targetName)
         }
-        return "\(pendingDropSources.count) öğeyi “\(targetName)” klasörüne taşımak mı, kopyalamak mı istiyorsunuz?"
+        return L("%ld öğeyi “%@” klasörüne taşımak mı, kopyalamak mı istiyorsunuz?", pendingDropSources.count, targetName)
     }
 
     func cancelDrop() {
@@ -792,7 +784,7 @@ final class ExplorerModel: ObservableObject {
     }
 
     func beginNewFolder() {
-        nameInput = "Yeni Klasör"
+        nameInput = L("Yeni Klasör")
         showNewFolder = true
     }
 
@@ -807,7 +799,7 @@ final class ExplorerModel: ObservableObject {
     }
 
     func beginNewFile() {
-        nameInput = "Yeni Belge.txt"
+        nameInput = L("Yeni Belge") + ".txt"
         showNewFile = true
     }
 
@@ -816,7 +808,7 @@ final class ExplorerModel: ObservableObject {
         guard !name.isEmpty, let dest = validatedDestination(in: currentFolder, name: name) else { return }
         runFileOperation({
             if !FileManager.default.createFile(atPath: dest.path, contents: Data()) {
-                throw ExplorerError.message("“\(name)” oluşturulamadı.")
+                throw ExplorerError.message(L("“%@” oluşturulamadı.", name))
             }
         }, completion: {
             self.pendingSelectPaths = [dest.path]
@@ -831,7 +823,7 @@ final class ExplorerModel: ObservableObject {
 
     private func validatedDestination(in folder: URL, name: String, allowCaseChangeOf source: URL? = nil) -> URL? {
         if name.contains("/") || name == "." || name == ".." {
-            errorMessage = "Geçersiz ad: “\(name)”"
+            errorMessage = L("Geçersiz ad: “%@”", name)
             return nil
         }
         let dest = folder.appendingPathComponent(name)
@@ -839,7 +831,7 @@ final class ExplorerModel: ObservableObject {
             // Yalnızca büyük/küçük harf değişikliğine izin ver.
             let caseOnly = source.map { $0.lastPathComponent.lowercased() == name.lowercased() } ?? false
             if !caseOnly {
-                errorMessage = "“\(name)” adında bir öğe zaten var."
+                errorMessage = L("“%@” adında bir öğe zaten var.", name)
                 return nil
             }
         }
@@ -878,7 +870,7 @@ final class ExplorerModel: ObservableObject {
         repeat {
             let suffix: String
             if copySuffix {
-                suffix = counter == 1 ? " kopya" : " kopya \(counter)"
+                suffix = counter == 1 ? " " + L("kopya") : " " + L("kopya") + " \(counter)"
             } else {
                 suffix = " \(counter + 1)"
             }

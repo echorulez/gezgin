@@ -15,7 +15,7 @@
   <img alt="Bağımlılık yok" src="https://img.shields.io/badge/ba%C4%9F%C4%B1ml%C4%B1l%C4%B1k-yok-brightgreen">
 </p>
 
-> **English:** Gezgin ("Explorer" in Turkish) is a native macOS file manager with a Windows Explorer layout: a folder tree on the left, the selected folder's contents on the right. Written in Swift with SwiftUI and AppKit, no third-party dependencies. The interface is in Turkish.
+> **English:** Gezgin ("Explorer" in Turkish) is a native macOS file manager with a Windows Explorer layout: a folder tree on the left, the selected folder's contents on the right. Written in Swift with SwiftUI and AppKit, no third-party dependencies. The interface is available in Turkish and English and follows the system language by default.
 
 ## Neden?
 
@@ -42,6 +42,10 @@ Finder'da klasör ağacı yok. Windows'tan gelenler için "solda ağaç, sağda 
 - Klasör adına (`.git`, `src`, `node_modules`, `docs`…) ve dosya uzantısına (`.swift`, `.json`, `.pdf`…) göre renkli, ayırt edici ikonlar
 - Görünüm menüsünden macOS sistem ikonlarına dönülebilir
 - Yalnızca Gezgin içinde görünür, dosyalara dokunmaz
+
+**Dil ve ayarlar**
+- Türkçe ve İngilizce arayüz; varsayılan olarak macOS'in dilini izler
+- Ayarlar penceresi (⌘,): dil, tam yol, ikon teması, gizli dosyalar
 
 **Dosya işlemleri**
 - Kes, kopyala, yapıştır: sistem panosunu kullanır, Finder ile iki yönlü çalışır
@@ -102,6 +106,7 @@ Xcode ile çalışmak için `Package.swift` dosyasını açıp ⌘R yeterli.
 | Tam yolu göster/gizle | ⌥⌘P |
 | Gezgin ikonları / sistem ikonları | ⌥⌘I |
 | Gizli dosyalar | ⇧⌘. |
+| Ayarlar | ⌘, |
 | Yenile | ⌘R |
 
 Ok tuşları, en son tıklanan panelde çalışır: ağaca tıkladıysanız ağaçta, listeye tıkladıysanız listede.
@@ -124,6 +129,8 @@ Sources/Gezgin/
   SidebarView.swift        Klasör ağacı
   FileListView.swift       Dosya tablosu ve sağ tık menüsü
   ContentView.swift        Araç çubuğu, adres çubuğu, durum çubuğu, diyaloglar
+  Localization.swift       Çeviriler ve dil seçimi
+  SettingsView.swift       Ayarlar penceresi
   IconTheme.swift          İkon teması (ad ve uzantı eşlemeleri)
   FileItem.swift           Veri türleri
 ```

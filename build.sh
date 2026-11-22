@@ -37,6 +37,9 @@ mkdir -p "$OUT_DIR"
 if [ -d "$APP" ]; then mv "$APP" "$OUT_DIR/.old-$(date +%s).app"; fi
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
 cp "$BIN_DIR/$APP_NAME" "$APP/Contents/MacOS/$APP_NAME"
+# Sistem menülerinin (Gizle, Çık, Pencere…) Türkçe/İngilizce görünebilmesi için
+# uygulamanın desteklediği diller pakette bildirilir.
+mkdir -p "$APP/Contents/Resources/tr.lproj" "$APP/Contents/Resources/en.lproj"
 if [ -f "Resources/AppIcon.icns" ]; then cp "Resources/AppIcon.icns" "$APP/Contents/Resources/AppIcon.icns"; fi
 
 cat > "$APP/Contents/Info.plist" <<EOF
@@ -47,6 +50,8 @@ cat > "$APP/Contents/Info.plist" <<EOF
     <key>CFBundleName</key><string>${APP_NAME}</string>
     <key>CFBundleDisplayName</key><string>${APP_NAME}</string>
     <key>CFBundleExecutable</key><string>${APP_NAME}</string>
+    <key>CFBundleDevelopmentRegion</key><string>en</string>
+    <key>CFBundleLocalizations</key><array><string>tr</string><string>en</string></array>
     <key>CFBundleIconFile</key><string>AppIcon</string>
     <key>CFBundleIdentifier</key><string>${BUNDLE_ID}</string>
     <key>CFBundlePackageType</key><string>APPL</string>

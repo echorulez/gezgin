@@ -55,7 +55,7 @@ struct TreeRowView: View {
                          isPackage: false, size: 16)
             }
 
-            Text(row.isComputer ? "Bu Mac" : FileManager.default.displayName(atPath: row.url.path))
+            Text(row.isComputer ? L("Bu Mac") : FileManager.default.displayName(atPath: row.url.path))
                 .lineLimit(1)
 
             Spacer(minLength: 0)
@@ -68,7 +68,7 @@ struct TreeRowView: View {
                         .font(.system(size: 10))
                 }
                 .buttonStyle(.borderless)
-                .help("Çıkar")
+                .help(L("Çıkar"))
             }
         }
         .padding(.leading, CGFloat(row.depth) * 14)
@@ -98,7 +98,7 @@ struct TreeRowView: View {
             dropTargeted = targeted && !row.isComputer
         }
         .contextMenu {
-            Button(row.isExpanded ? "Daralt" : "Genişlet") { model.toggleExpanded(row) }
+            Button(row.isExpanded ? L("Daralt") : L("Genişlet")) { model.toggleExpanded(row) }
             if !row.isComputer {
                 treeFolderMenu
             }
@@ -116,16 +116,16 @@ struct TreeRowView: View {
     @ViewBuilder
     private var treeFolderMenu: some View {
         Group {
-            Button("Aç") { model.selectTreeRow(row) }
-            Button("Buraya Yapıştır") { model.paste(into: row.url) }
+            Button(L("Aç")) { model.selectTreeRow(row) }
+            Button(L("Buraya Yapıştır")) { model.paste(into: row.url) }
                 .disabled(!model.pasteboardHasFiles)
             Divider()
-            Button("Yolu Kopyala") { model.copyPath([row.url]) }
-            Button("Finder'da Göster") { model.revealInFinder([row.url]) }
-            Button("Burada Terminal Aç") { model.openInTerminal(row.url) }
+            Button(L("Yolu Kopyala")) { model.copyPath([row.url]) }
+            Button(L("Finder'da Göster")) { model.revealInFinder([row.url]) }
+            Button(L("Burada Terminal Aç")) { model.openInTerminal(row.url) }
             if row.isVolume {
                 Divider()
-                Button("Çıkar") { model.eject(row.url) }
+                Button(L("Çıkar")) { model.eject(row.url) }
             }
         }
     }
