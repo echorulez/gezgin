@@ -44,10 +44,16 @@ struct TreeRowView: View {
                 .opacity(row.hasChildren ? 1 : 0)
                 .onTapGesture { model.toggleExpanded(row) }
 
-            Image(nsImage: icon)
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(width: 16, height: 16)
+            if row.depth <= 1 {
+                // Bu Mac, ana klasör ve diskler kendi sistem ikonlarıyla kalır.
+                Image(nsImage: icon)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 16, height: 16)
+            } else {
+                ItemIcon(themed: model.useThemeIcons, url: row.url, name: row.url.lastPathComponent, isDirectory: true,
+                         isPackage: false, size: 16)
+            }
 
             Text(row.isComputer ? "Bu Mac" : FileManager.default.displayName(atPath: row.url.path))
                 .lineLimit(1)

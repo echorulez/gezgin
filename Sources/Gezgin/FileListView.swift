@@ -8,9 +8,8 @@ struct FileListView: View {
         Table(of: FileItem.self, selection: $model.selection, sortOrder: $model.sortOrder) {
             TableColumn("Ad", value: \.name) { item in
                 HStack(spacing: 6) {
-                    Image(nsImage: item.icon)
-                        .resizable()
-                        .frame(width: 18, height: 18)
+                    ItemIcon(themed: model.useThemeIcons, url: item.url, name: item.name, isDirectory: item.isDirectory,
+                             isPackage: item.isPackage, size: 18)
                     Text(item.name)
                         .lineLimit(1)
                 }

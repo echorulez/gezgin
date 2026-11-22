@@ -121,6 +121,8 @@ struct GezginApp: App {
             CommandGroup(before: .toolbar) {
                 Toggle("Tam Yolu Göster", isOn: $model.showFullPath)
                     .keyboardShortcut("p", modifiers: [.command, .option])
+                Toggle("Gezgin İkonları", isOn: $model.useThemeIcons)
+                    .keyboardShortcut("i", modifiers: [.command, .option])
                 Toggle("Gizli Dosyaları Göster", isOn: $model.showHidden)
                     .keyboardShortcut(".", modifiers: [.command, .shift])
                 Divider()

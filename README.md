@@ -38,6 +38,11 @@ Finder'da klasör ağacı yok. Windows'tan gelenler için "solda ağaç, sağda 
 - Klasör içinde arama, gizli dosyaları gösterme
 - Klasör dışarıdan değişirse liste kendiliğinden yenilenir
 
+**İkon teması**
+- Klasör adına (`.git`, `src`, `node_modules`, `docs`…) ve dosya uzantısına (`.swift`, `.json`, `.pdf`…) göre renkli, ayırt edici ikonlar
+- Görünüm menüsünden macOS sistem ikonlarına dönülebilir
+- Yalnızca Gezgin içinde görünür, dosyalara dokunmaz
+
 **Dosya işlemleri**
 - Kes, kopyala, yapıştır: sistem panosunu kullanır, Finder ile iki yönlü çalışır
 - Sürükle-bırak: liste, ağaç ve Finder arasında; işlemden önce Taşı / Kopyala / Vazgeç diye sorar
@@ -95,6 +100,7 @@ Xcode ile çalışmak için `Package.swift` dosyasını açıp ⌘R yeterli.
 | Burada Terminal aç | ⌥⌘T |
 | Yolu kopyala | ⌥⌘C |
 | Tam yolu göster/gizle | ⌥⌘P |
+| Gezgin ikonları / sistem ikonları | ⌥⌘I |
 | Gizli dosyalar | ⇧⌘. |
 | Yenile | ⌘R |
 
@@ -118,6 +124,7 @@ Sources/Gezgin/
   SidebarView.swift        Klasör ağacı
   FileListView.swift       Dosya tablosu ve sağ tık menüsü
   ContentView.swift        Araç çubuğu, adres çubuğu, durum çubuğu, diyaloglar
+  IconTheme.swift          İkon teması (ad ve uzantı eşlemeleri)
   FileItem.swift           Veri türleri
 ```
 

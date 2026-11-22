@@ -24,6 +24,10 @@ final class ExplorerModel: ObservableObject {
     @Published var showFullPath: Bool = (UserDefaults.standard.object(forKey: "showFullPath") as? Bool) ?? true {
         didSet { UserDefaults.standard.set(showFullPath, forKey: "showFullPath") }
     }
+    /// Gezgin'in kendi ikon teması mı, yoksa macOS sistem ikonları mı.
+    @Published var useThemeIcons: Bool = (UserDefaults.standard.object(forKey: "useThemeIcons") as? Bool) ?? true {
+        didSet { UserDefaults.standard.set(useThemeIcons, forKey: "useThemeIcons") }
+    }
     @Published var searchText = "" {
         didSet { applySortAndFilter() }
     }
